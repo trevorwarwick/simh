@@ -317,6 +317,197 @@ static BITFIELD dup_txdbuf_bits[] = {
 #define TXDBUF_MBZ ((1<<15)|(1<<13))
 #define TXDBUF_WRITEABLE (TXDBUF_M_TABRT|TXDBUF_M_TEOM|TXDBUF_M_TSOM|TXDBUF_M_TXDBUF)
 
+
+/* Equivalent register definitions for DPV11. Some bits are common; some are nearly common
+   but with slightly different semantics; some are different altogether */
+
+/* DPV RXCSR - 16XXX0 - receiver control/status register */
+
+static BITFIELD dpv_rxcsr_bits[] = {
+    BIT(DPV_SFRL),                           /* Set Freq / Remote Loop */
+#define RXCSR_V_DPV_SFRL     0
+#define RXCSR_M_DPV_SFRL     (1<<RXCSR_V_DPV_SFRL)
+    BIT(DPV_DTR),                               /* Data Terminal Ready */
+#define RXCSR_V_DPV_DTR      1
+#define RXCSR_M_DPV_DTR      (1<<RXCSR_V_DPV_DTR)
+    BIT(DPV_RTS),                               /* Request To Send */
+#define RXCSR_V_DPV_RTS      2
+#define RXCSR_M_DPV_RTS      (1<<RXCSR_V_DPV_RTS)
+    BIT(DPV_DPV_LL),                            /* Local Loop */
+#define RXCSR_V_DPV_LL       3
+#define RXCSR_M_DPV_LL       (1<<RXCSR_V_DPV_LL)
+    BIT(DPV_RCVEN),                             /* Receiver Enable */
+#define RXCSR_V_DPV_RCVEN    4
+#define RXCSR_M_DPV_RCVEN    (1<<RXCSR_V_DPV_RCVEN)
+    BIT(DPV_DSCIE),                             /* Data Set Change Interrupt Enable */
+#define RXCSR_V_DPV_DSCIE    5
+#define RXCSR_M_DPV_DSCIE    (1<<RXCSR_V_DPV_DSCIE)
+    BIT(DPV_RXIE),                              /* Receive Interrupt Enable */
+#define RXCSR_V_DPV_RXIE     6
+#define RXCSR_M_DPV_RXIE     (1<<RXCSR_V_DPV_RXIE)
+    BIT(DPV_RXDONE),                            /* Receive Done */
+#define RXCSR_V_DPV_RXDONE   7
+#define RXCSR_M_DPV_RXDONE   (1<<RXCSR_V_DPV_RXDONE)
+    BIT(DPV_DETSYN),                            /* Sync Detected */
+#define RXCSR_V_DPV_DETSYN   8
+#define RXCSR_M_DPV_DETSYN   (1<<RXCSR_V_DPV_DETSYN)
+    BIT(DPV_DSR),                               /* Data Set Ready */
+#define RXCSR_V_DPV_DSR      9
+#define RXCSR_M_DPV_DSR      (1<<RXCSR_V_DPV_DSR)
+    BIT(DPV_RSTARY),                            /* Receiver Status Ready */
+#define RXCSR_V_DPV_RSTARY   10
+#define RXCSR_M_DPV_RSTARY   (1<<RXCSR_V_DPV_RSTARY)
+    BIT(DPV_RXACT),                             /* Receive Active */
+#define RXCSR_V_DPV_RXACT    11
+#define RXCSR_M_DPV_RXACT    (1<<RXCSR_V_DPV_RXACT)
+    BIT(DPV_DCD),                               /* Carrier */
+#define RXCSR_V_DPV_DCD      12
+#define RXCSR_M_DPV_DCD      (1<<RXCSR_V_DPV_DCD)
+    BIT(DPV_CTS),                               /* Clear to Send */
+#define RXCSR_V_DPV_CTS      13
+#define RXCSR_M_DPV_CTS      (1<<RXCSR_V_DPV_CTS)
+    BIT(DPV_RING),                              /* Ring */
+#define RXCSR_V_DPV_RING     14
+#define RXCSR_M_DPV_RING     (1<<RXCSR_V_DPV_RING)
+    BIT(DPV_DSCHNG),                            /* Data Set Change */
+#define RXCSR_V_DPV_DSCHNG   15
+#define RXCSR_M_DPV_DSCHNG   (1<<RXCSR_V_DPV_DSCHNG)
+    ENDBITS
+};
+#define RXCSR_DPV_MODEM_BITS (RXCSR_M_DPV_RING|RXCSR_M_DPV_CTS|RXCSR_M_DPV_DSR|RXCSR_M_DPV_DCD)
+#define RXCSR_DPV_WRITEABLE (RXCSR_M_DPV_SFRL|RXCSR_M_DPV_DTR|RXCSR_M_DPV_RTS|RXCSR_M_DPV_LL|RXCSR_M_DPV_RCVEN|RXCSR_M_DPV_DSCIE|RXCSR_M_DPV_RXIE)
+
+/* DPV RXDBUF - 16XXX2 - receiver Data Buffer register */
+
+static BITFIELD dpv_rxdbuf_bits[] = {
+    BITF(DPV_RXDBUF,8),                         /* Receive Data Buffer */
+#define RXDBUF_V_DPV_RXDBUF  0
+#define RXDBUF_S_DPV_RXDBUF  8
+#define RXDBUF_M_DPV_RXDBUF  (((1<<RXDBUF_S_DPV_RXDBUF)-1)<<RXDBUF_V_DPV_RXDBUF)
+    BIT(DPV_RSTRMSG),                           /* Receiver Start of Message */
+#define RXDBUF_V_DPV_RSTRMSG 8
+#define RXDBUF_M_DPV_RSTRMSG (1<<RXDBUF_V_DPV_RSTRMSG)
+    BIT(DPV_RENDMSG),                           /* Receiver End Of Message */
+#define RXDBUF_V_DPV_RENDMSG 9
+#define RXDBUF_M_DPV_RENDMSG (1<<RXDBUF_V_DPV_RENDMSG)
+    BIT(DPV_RABRT),                             /* Receiver Abort */
+#define RXDBUF_V_DPV_RABRT   10
+#define RXDBUF_M_DPV_RABRT   (1<<RXDBUF_V_DPV_RABRT)
+    BIT(DPV_RXOVR),                             /* Receiver Overrun */
+#define RXDBUF_V_DPV_RXOVR   11
+#define RXDBUF_M_DPV_RXOVR   (1<<RXDBUF_V_DPV_RXOVR)
+    BITF(DPV_ABC,3),                           /* Assembled Bit Count */
+#define RXDBUF_V_DPV_ABC     12
+#define RXDBUF_S_DPV_ABC     3
+#define RXDBUF_M_DPV_ABC     (((1<<RXDBUF_S_DPV_ABC)-1)<<RXDBUF_V_DPV_ABC)
+    BIT(DPV_RCRCER),                            /* Receiver CRC Error */
+#define RXDBUF_V_DPV_RCRCER  15
+#define RXDBUF_M_DPV_RCRCER  (1<<RXDBUF_V_DPV_RCRCER)
+    ENDBITS
+};
+
+/* DPV PCSAR - 16XXX2 - Parameter Control/Status register */
+
+static BITFIELD dpv_parcsr_bits[] = {
+    BITF(DPV_ADSYNC,8),                         /* Secondary Station Address/Receiver Sync Char */
+#define PARCSR_V_DPV_ADSYNC   0
+#define PARCSR_S_DPV_ADSYNC   8
+#define PARCSR_M_DPV_ADSYNC   (((1<<PARCSR_S_DPV_ADSYNC)-1)<<PARCSR_V_DPV_ADSYNC)
+    BITF(DPV_ERRDET,8),                         /* CRC Type */
+#define PARCSR_V_DPV_ERRDET   8
+#define PARCSR_S_DPV_ERRDET   3
+#define PARCSR_M_DPV_ERRDET   (((1<<PARCSR_S_DPV_ERRDET)-1)<<PARCSR_V_DPV_ERRDET)
+    BIT(DPV_IDLEMODE),                          /* Idle Mode Select */
+#define PARCSR_V_DPV_IDLEMODE 11
+#define PARCSR_M_DPV_IDLEMODE (1<<PARCSR_V_DPV_IDLEMODE)
+    BIT(DPV_SECMODE),                           /* Secondary Mode Select */
+#define PARCSR_V_DPV_SECMODE  12
+#define PARCSR_M_DPV_SECMODE  (1<<PARCSR_V_DPV_SECMODE)
+    BIT(DPV_STRSYN),                            /* Strip Sync */
+#define PARCSR_V_DPV_STRSYN   13
+#define PARCSR_M_DPV_STRSYN   (1<<PARCSR_V_DPV_STRSYN)
+    BIT(DPV_PROTSEL),                           /* Protocol Select */
+#define PARCSR_V_DPV_PROTSEL  14
+#define PARCSR_M_DPV_PROTSEL  (1<<PARCSR_V_DPV_PROTSEL)
+    BIT(DPV_APA),                               /* All Parties Address Mode */
+#define PARCSR_V_DPV_APA      15
+#define PARCSR_M_DPV_APA      (1<<PARCSR_V_DPV_APA)
+    ENDBITS
+};
+
+/* DPV PCSCR - 16XXX4 - Parameter Control / Character Length register */
+
+static BITFIELD dpv_txcsr_bits[] = {
+    BIT(DPV_RESET),                           /* Device Reset */
+#define TXCSR_V_DPV_RESET        0
+#define TXCSR_M_DPV_RESET        (1<<TXCSR_V_DPV_RESET)
+    BIT(DPV_TXACT),                           /* Transmitter Active */
+#define TXCSR_V_DPV_TXACT        1
+#define TXCSR_M_DPV_TXACT        (1<<TXCSR_V_DPV_TXACT)
+    BIT(DPV_TBEMPTY),                         /* Transmit Buffer Empty (DONE) */
+#define TXCSR_V_DPV_TBEMPTY      2
+#define TXCSR_M_DPV_TBEMPTY      (1<<TXCSR_V_DPV_TBEMPTY)
+    BIT(DPV_MAINT),                           /* Maintenance Mode Select */
+#define TXCSR_V_DPV_MAINT        3
+#define TXCSR_M_DPV_MAINT        (1<<TXCSR_V_DPV_MAINT)
+    BIT(DPV_SEND),                            /* Enable Transmit */
+#define TXCSR_V_DPV_SEND         4
+#define TXCSR_M_DPV_SEND         (1<<TXCSR_V_DPV_SEND)
+    BIT(DPV_SQTM),                            /* SQ/TM */
+#define TXCSR_V_DPV_SQTM         5
+#define TXCSR_M_DPV_SQTM         (1<<TXCSR_V_DPV_SQTM)
+    BIT(DPV_TXIE),                            /* Transmit Interrupt Enable */
+#define TXCSR_V_DPV_TXIE         6
+#define TXCSR_M_DPV_TXIE         (1<<TXCSR_V_DPV_TXIE)
+    BITNCF(1),                               /* reserved */
+    BITF(DPV_RXCHARSIZE,3),                  /* Receive Character Size*/
+#define TXCSR_V_DPV_RXCHARSIZE    8
+#define TXCSR_S_DPV_RXCHARSIZE    3
+#define TXCSR_M_DPV_RXCHARSIZE    (((1<<TXCSR_S_DPV_RXCHARSIZE)-1)<<TXCSR_V_DPV_RXCHARSIZE)
+    BIT(DPV_EXTCONT),                        /* Extended Control Field */
+#define TXCSR_V_DPV_EXTCONT       11
+#define TXCSR_M_DPV_EXTCONT       (1<<TXCSR_V_DPV_EXTCONT)
+    BIT(DPV_EXTADDR),                        /* Extended Control Field */
+#define TXCSR_V_DPV_EXTADDR       12
+#define TXCSR_M_DPV_EXTADDR       (1<<TXCSR_V_DPV_EXTADDR)
+    BITF(DPV_TXCHARSIZE,3),                  /* Transmit Character Size*/
+#define TXCSR_V_DPV_TXCHARSIZE    13
+#define TXCSR_S_DPV_TXCHARSIZE    3
+#define TXCSR_M_DPV_TXCHARSIZE    (((1<<TXCSR_S_DPV_TXCHARSIZE)-1)<<TXCSR_V_DPV_TXCHARSIZE)
+    ENDBITS
+};
+#define TXCSR_DPV_MBZ ((1<<7))
+#define TXCSR_DPV_WRITEABLE (TXCSR_M_DPV_RESET|TXCSR_M_DPV_MAINT|TXCSR_M_DPV_SEND|TXCSR_M_DPV_SQTM|TXCSR_M_DPV_TXIE|TXCSR_M_DPV_RXCHARSIZE|TXCSR_M_DPV_EXTCONT|TXCSR_M_DPV_EXTADDR|TXCSR_M_DPV_TXCHARSIZE)
+
+/* DPV TDSR - 16XXX6 - Transmitter Data and Status  register */
+
+static BITFIELD dpv_txdbuf_bits[] = {
+    BITF(DPV_TXDBUF,8),                         /* Transmit Data Buffer */
+#define TXDBUF_V_DPV_TXDBUF  0
+#define TXDBUF_S_DPV_TXDBUF  8
+#define TXDBUF_M_DPV_TXDBUF  (((1<<TXDBUF_S_DPV_TXDBUF)-1)<<TXDBUF_V_DPV_TXDBUF)
+    BIT(DPV_TSOM),                              /* Transmit Start of Message */
+#define TXDBUF_V_DPV_TSOM    8
+#define TXDBUF_M_DPV_TSOM    (1<<TXDBUF_V_DPV_TSOM)
+    BIT(DPV_TEOM),                              /* End of Transmitted Message */
+#define TXDBUF_V_DPV_TEOM    9
+#define TXDBUF_M_DPV_TEOM    (1<<TXDBUF_V_DPV_TEOM)
+    BIT(DPV_TABRT),                             /* Transmit Abort */
+#define TXDBUF_V_DPV_TABRT   10
+#define TXDBUF_M_DPV_TABRT   (1<<TXDBUF_V_TABRT)
+    BIT(GOAHEAD),                               /* Use Go Ahead */
+#define TXDBUF_V_DPV_GOAHEAD 11
+#define TXDBUF_M_DPV_GOAHEAD (1<<TXDBUF_V_GOAHEAD)
+    BITNCF(3),                                  /* reserved */
+    BIT(DPV_TERR),                              /* Transmit Error */
+#define TXDBUF_V_DPV_TERR    15
+#define TXDBUF_M_DPV_TERR    (1<<TXDBUF_V_DPV_TERR)
+    ENDBITS
+};
+#define TXDBUF_DPV_MBZ ((7<<12))
+#define TXDBUF_DPV_WRITEABLE (TXDBUF_M_DPV_GOAHEAD|TXDBUF_M_DPV_TABRT|TXDBUF_M_DPV_TEOM|TXDBUF_M_DPV_TSOM|TXDBUF_M_DPV_TXDBUF)
+
+
 #define TRAILING_SYNS 8
 const uint8 tsyns[TRAILING_SYNS] = {0x96,0x96,0x96,0x96,0x96,0x96,0x96,0x96}; 
 
